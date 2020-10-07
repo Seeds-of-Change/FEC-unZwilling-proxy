@@ -1,19 +1,39 @@
 const express = require('express');
 const path = require('path');
-const { createProxyMiddleware } = require('http-proxy-middleware');
+const axios = require('axios');
 
-const proxy = createProxyMiddleware({
-  target: 'http://localhost:8083',
-  changeOrigin: true, // for vhosted sites, changes host header to target's host
-  logLevel: 'debug',
-});
+// const { createProxyMiddleware } = require('http-proxy-middleware');
 
 const app = express();
 const port = 2112;
 
 app.use('/', express.static(path.join(__dirname, '../client/dist')));
 
-app.use('/questions/', proxy);
+// app.use('/products', createProxyMiddleware({ target: 'http://localhost:3000', changeOrigin: true }));
+// app.use('/relatedproducts', createProxyMiddleware({ target: 'http://localhost:3001', changeOrigin: true }));
+// app.use('/productfeatures', createProxyMiddleware({ target: 'http://localhost:3002', changeOrigin: true }));
+// app.use('/review', createProxyMiddleware({ target: 'http://localhost:7777', changeOrigin: true }));
+// app.use('/questions', createProxyMiddleware({ target: 'http://localhost:3003', changeOrigin: true }));
+
+const Proxy = (targetUrl) => (req, res) => {
+  axios.get(targetUrl + req.originalUrl + req.params.id)
+    .then((response) => {
+      res.send(response.data);
+    })
+    .catch((error) => {
+      res.send(error);
+    });
+};
+
+const proxyQuestions = Proxy('http://localhost:3003');
+const proxyReviews = Proxy('http://localhost:7777');
+const proxyProductInfo = Proxy('http://localhost:3002');
+const proxyRelatedProducts = Proxy('http://localhost:3001');
+
+app.use('/questions/:id', proxyQuestions);
+app.use('/review/:id', proxyReviews);
+app.use('/products/:id', proxyProductInfo);
+app.use('/relatedproducts/:id', proxyRelatedProducts);
 
 app.listen(port, () => {
   console.log(`Proxy running on port ${port}.`);
