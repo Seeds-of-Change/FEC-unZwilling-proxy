@@ -31,6 +31,8 @@ const proxyProductInfo = Proxy('http://localhost:3002');
 const proxyRelatedProducts = Proxy('http://localhost:3001');
 const productfeatures = Proxy('http://localhost:3000');
 
+app.use('/product/:id', proxyProduct);
+
 app.use('/questions/:id', proxyQuestions);
 app.use('/review/:id', proxyReviews);
 app.use('/products/:id', proxyProductInfo);
