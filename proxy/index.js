@@ -2,21 +2,13 @@ const express = require('express');
 const path = require('path');
 const axios = require('axios');
 
-// const { createProxyMiddleware } = require('http-proxy-middleware');
-
 const app = express();
 const port = 2112;
 
 app.use('/', express.static(path.join(__dirname, '../client/dist')));
 
-// app.use('/products', createProxyMiddleware({ target: 'http://localhost:3000', changeOrigin: true }));
-// app.use('/relatedproducts', createProxyMiddleware({ target: 'http://localhost:3001', changeOrigin: true }));
-// app.use('/productfeatures', createProxyMiddleware({ target: 'http://localhost:3002', changeOrigin: true }));
-// app.use('/review', createProxyMiddleware({ target: 'http://localhost:7777', changeOrigin: true }));
-// app.use('/questions', createProxyMiddleware({ target: 'http://localhost:3003', changeOrigin: true }));
-
 const Proxy = (targetUrl) => (req, res) => {
-  axios.get(targetUrl + req.originalUrl + req.params.id)
+  axios.get(targetUrl + req.originalUrl)
     .then((response) => {
       res.send(response.data);
     })
@@ -25,15 +17,18 @@ const Proxy = (targetUrl) => (req, res) => {
     });
 };
 
-const proxyQuestions = Proxy('http://localhost:3003');
-const proxyReviews = Proxy('http://localhost:7777');
-const proxyProductInfo = Proxy('http://localhost:3002');
-const proxyRelatedProducts = Proxy('http://localhost:3001');
+const proxyQuestions = Proxy('http://54.183.5.42');
+const proxyReviews = Proxy('http://3.131.135.129');
+const proxyFeatureExplorer = Proxy('http://3.101.127.251');
+const proxyRelatedProducts = Proxy('http://18.144.2.219');
+const proxyProductInfo = Proxy('http://3.138.107.143');
 
 app.use('/questions/:id', proxyQuestions);
 app.use('/review/:id', proxyReviews);
-app.use('/products/:id', proxyProductInfo);
+app.use('/products/featureExplorer/:id', proxyFeatureExplorer);
+app.use('/products/relatedProducts/:id', proxyRelatedProducts);
 app.use('/relatedproducts/:id', proxyRelatedProducts);
+app.use('/products/productInfo/:id', proxyProductInfo);
 
 app.listen(port, () => {
   console.log(`Proxy running on port ${port}.`);
