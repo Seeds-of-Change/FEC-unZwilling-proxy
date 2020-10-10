@@ -3,10 +3,9 @@ const path = require('path');
 const axios = require('axios');
 
 const app = express();
-const port = 2112;
+const port = 80;
 
 app.use('/', express.static(path.join(__dirname, '../client/dist')));
-
 const Proxy = (targetUrl) => (req, res) => {
   axios.get(targetUrl + req.originalUrl)
     .then((response) => {
