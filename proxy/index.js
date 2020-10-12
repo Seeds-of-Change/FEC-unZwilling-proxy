@@ -20,7 +20,7 @@ const proxyQuestions = Proxy('http://54.183.5.42');
 const proxyReviews = Proxy('http://3.131.135.129');
 const proxyFeatureExplorer = Proxy('http://3.101.127.251');
 const proxyRelatedProducts = Proxy('http://18.144.2.219');
-const proxyProductInfo = Proxy('http://3.129.22.244/');
+const proxyProductInfo = Proxy('http://3.129.22.244');
 
 app.use('/questions/:id', proxyQuestions);
 app.use('/review/:id', proxyReviews);
